@@ -45,8 +45,17 @@ def gather_token_logprobs(log_probs, token_ids):
     # Step 3: Remove the singleton dimension. So, now, Final shape: (B, T)
     return gathered.squeeze(-1)
 
-# Step 4 - masked_sequence_logprob (not yet solved)
-# TODO: implement
+# Step 4 - masked_sequence_logprob
+def masked_sequence_logprob(token_logprobs, mask):
+    """
+    Args:
+        token_logprobs: (B, T)
+        mask: (B, T) binary or bool
+
+    Returns:
+        (B,) sequence log-probabilities
+    """
+    return np.sum(token_logprobs * mask, axis=-1)
 
 # Step 5 - init_policy_params (not yet solved)
 # TODO: implement
