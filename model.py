@@ -24,8 +24,26 @@ def softmax(logits, axis=-1):
     # Step 3 : Normalize
     return exp_logits / np.sum(exp_logits, axis=axis, keepdims=True)
 
-# Step 3 - gather_token_logprobs (not yet solved)
-# TODO: implement
+# Step 3 - gather_token_logprobs
+def gather_token_logprobs(log_probs, token_ids):
+    """
+    Args:
+        log_probs: (B, T, V)
+        token_ids: (B, T)
+
+    Returns:
+        (B, T) containing the log-probability of the observed token
+        at each position.
+    """
+    # Step 1 : Add a singleton dimension, so for token_ids, we go from (B, T) to (B, T, 1)
+    indices = token_ids[..., None]   
+    # After 1st Step, shape of indices = (B, T, 1)   
+    # Step 2 : Gather along the vocabulary axis         
+    gathered = np.take_along_axis(log_probs, indices, axis=-1)
+    # Each (b, t) now contains the single log-probability corresponding to token_ids[b, t].
+    # That's why, till now, gathered shape is (B, T, 1)
+    # Step 3: Remove the singleton dimension. So, now, Final shape: (B, T)
+    return gathered.squeeze(-1)
 
 # Step 4 - masked_sequence_logprob (not yet solved)
 # TODO: implement
